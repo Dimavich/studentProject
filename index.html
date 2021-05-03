@@ -2,34 +2,62 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./assets/styles.css">
-    <script src="./assets/scripts.js" defer></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+  <link rel="stylesheet" href="style.css">
+  <title>Surf Forecasting App</title>
 </head>
 
 <body>
-    <div class="navbar">
-    <h1>Surfing Forecast</h1>
-    </div>
+  <header>
+    <h1 class="header black-text center-align">California Surf Forecast</h1>
+  </header>
+  <div class="row" id="body">
+    <div class="col s13 m10 l8 xl6 offset-m1 offset-l2 offset-xl3 transparent lighten-3 section z-depth-3"
+      id="conditions">
+      <div class="input-field col s13 m12 l12 xl12" id="cities">
+        <select id="select">
+          <option value="0" disabled selected="true" id="default">Choose a surfing area</option>
+          <option value="1" id="santacruz">Santa Cruz</option>
+          <option value="2" id="pacifica">Pacifica</option>
+          <option value="3" id="asilomar">Asilomar State Beach</option>
+          <option value="4" id="newportbeach">Newport Beach</option>
+          <option value="5" id="sandiego">San Diego</option>
+        </select>
+      </div>
+      <br>
+      <h3 class="header black-text text-darken-4 center-align" id="current-beach"></h3>
+      <table>
+          <tr>
 
-    <div class="container">
-    <div class="card">
-    <img src="./images/random/download.png" alt="Icon" style="width:50px">
-        <h4><b>Forecast</b></h4>
-        <p>Degree and Temp</p>
+            <th><a class="green-text text-darken-3" id="airTemp">
+                <p class="black-text">Temperature</p>[airTemp]
+              </a></th>
+          </tr>
+          <tr>
+            <th>
+              <p class="surf-recommendation" id="surf-recommendation">Get Current Surf Conditions:</p>
+            </th>
+          </tr>
+          <tr>
+            <td>
+              <p class="waves-giphy"></p>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <p>Wave Height</p><a class="lightblue-text" id="waveHeight">[waveHeight]</a>
+            </td>
+          </tr>
+      </table>
     </div>
-    </div> 
+  </div>
 
-    <div class="container">
-    <div class="card">
-    <img src="./images/random/download.png" alt="Icon" style="width:50px">
-        <h4><b>Forecast</b></h4>
-        <p>Degree and Temp</p>
-    </div>
-    </div> 
 
+  <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  <script src="script.js"></script>
 </body>
 
 </html>

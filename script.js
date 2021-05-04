@@ -1,6 +1,6 @@
 $(document).ready(function () {
    $('select').formSelect();
-
+   //Testing comment
    //Predefined surfing locations and their coordinates
    var surfSpot = [
       { name: "Select beach" },

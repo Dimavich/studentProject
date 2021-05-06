@@ -21,6 +21,10 @@ var locationEl = $('.location');
 var tempEl = $('.main-temp');
 var hiEl = $('.high');
 var lowEl = $('.low');
+var dateEl = $('#date');
+var lat = '';
+var lon = '';
+
 
 function getWeather(city) {
    var weatherURL = 'https://api.openweathermap.org/data/2.5/weather?q=' + city + '&units=imperial' + '&appid=' + apiKey;
@@ -29,24 +33,32 @@ function getWeather(city) {
        method: 'GET',
    }).then(function (weatherResponse) {
        weather = weatherResponse;
+       console.log(weather);
      
        var temp = (weather.main.temp).toFixed(0);
-
+      // icons
        var icon = weatherResponse.weather[0].icon;
-       var iconSrc = 'https://openweathermap.org/img/wn/' + icon + '@2x.png';
-     
-       locationEl.text(weather.name + ' (' + date + ')');
-      
-       tempEl.text('Temperature: ' + temp + '°F');
+       document.getElementById('image-icon').src = `./images/icons/${icon}.png`;
 
-       hiEl.text(weather.main.temp_min).toFixed(0);
+   // removed the date from here
+       locationEl.text(weather.name);
+   // added the date here
+       dateEl.text(date);
+      // removed the word temperture 
+       tempEl.text(temp + '°F');
+      // fixed the high weather
+       hiEl.text(weather.main.temp_max.toFixed(0) + '°');
+      // fixed the low weather
+       lowEl.text(weather.main.temp_min.toFixed(0) + '°');
 
-       lowEl.text(weather.main.temp_max).toFixed(0);
-      
+       lat = weather.coord.lat;
+       lon = weather.coord.lon;
+       fetchStormglassData(lat,lon);
        })
    }
 
 
+ 
 $('#search-btn').on('click', function (event) {
    event.preventDefault();
    var city = $('#search-bar').val().trim();
@@ -63,10 +75,14 @@ $('#search-btn').on('click', function (event) {
 /*Function to create and display buttons for each location searched. TO-DO:
 write a function to clear values/reset search upon reload or something*/
 function addCityButton(city) {
-   $('#th').text('Previous Cities Searched');
    var newSearch = $('<tr id="previousSearch">');
-   var cityButton = $('<button id=' + city + ' class=btn>').text(city);
+   var cityButton = $('<button id=' + city + ' class=btn>');
+   var btnIcon = $('<i class="fas fa-map-pin icon"></i>');
+   var cityName = $('<p class city-text></p>').text(city);
+   // added the map icon back
    newSearch.append(cityButton);
+   cityButton.append(btnIcon);
+   btnIcon.append(cityName);
    cityButton.on('click', function () {
        getWeather(city);
    })
@@ -93,98 +109,115 @@ window.onload = function () {
 }
 
 ////////////Start of Stormglass API for getting wave height.///////////////
-   var displayStormglassData = function (fetchedData) {
-      //var airTemp = fetchedData.hours[0].airTemperature.noaa;
- //Converting to Fahrenheit
-      //airTemp = ((airTemp * (9 / 5)) + 32).toFixed(2);
-      //$(".main-temp").html("<p class='black-text'>Current Temperature</p>" + airTemp + " °F");
+var displayStormglassData = function (fetchedData) {
+   //var airTemp = fetchedData.hours[0].airTemperature.noaa;
+//Converting to Fahrenheit
+   //airTemp = ((airTemp * (9 / 5)) + 32).toFixed(2);
+   //$(".main-temp").html("<p class='black-text'>Current Temperature</p>" + airTemp + " °F");
+   var waveHeightEl = $('.wave-height');
+   for (let i = 0; i < waveHeightEl.length; i++) {
+      waveHeightEl[i].textContent = fetchedData.hours[i].waveHeight.noaa + 'ft';
+   }
 
-      var waveHeight = fetchedData.hours[0].waveHeight.noaa;
- //Converting to feet and rounding to 2 decimal points.
-      waveHeight = (waveHeight * 3.281).toFixed(2);
-      $(".wave-report").text(waveHeight + "ft");
+   var timeTableEl = $('.time');
 
-   };
+   for (let i = 0; i < timeTableEl.length; i++) {
+   timeTableEl[i].textContent = moment().add(i , 'h').format('h a');
+      
+   }
+
+
+//    var waveHeight = fetchedData.hours[0].waveHeight.noaa;
+   
+// //Converting to feet and rounding to 2 decimal points.
+//    waveHeight = (waveHeight * 3.281).toFixed(2);
+//    $(".wave-report").text(waveHeight + "ft");
+
+};
 
 //TO-DO: Review below to see where to display on the HTML or if we want to use this at all
  
 //Fetching gifs from Giphy API. Not sure where to display this on the HTML
 
- var fetchGifs = function () {
+var fetchGifs = function () {
    var surfConditions = "";
 
-      if (waveHeight < 2) {
-       surfConditions = "Today is a good day for surfing!" ;
-    } else if (waveHeight > 2) {
-       surfConditions = "Surfing today is not recommended.";
-    } else {
-        surfConditions = "Today is a good day for surfing!";
-    }
+   if (waveHeight < 2) {
+      surfConditions = "Today is a good day for surfing!" ;
+   } else if (waveHeight > 2) {
+      surfConditions = "Surfing today is not recommended.";
+   } else {
+      surfConditions = "Today is a good day for surfing!";
+   }
 
-      var off = Math.floor(Math.random() * 20 + 1);
+   var off = Math.floor(Math.random() * 20 + 1);
 
-      // Searching gifs using Giphy API with "surfing" keyword and display on the page
-      fetch(
-         `https://api.giphy.com/v1/gifs/search?q=
-        surfing&api_key=Bp3XvQZse87d1YsB5T7Cpl5akJIKvcNg&limit=1&offset=${off}`
-      )
+   // Searching gifs using Giphy API with "surfing" keyword and display on the page
+   fetch(`https://api.giphy.com/v1/gifs/search?q=surfing&api_key=Bp3XvQZse87d1YsB5T7Cpl5akJIKvcNg&limit=1&offset=${off}`)
 
-         .then(function (response) {
-            if (response.ok) {
-               return response.json();
-            } else {
-               throw new Error('Something went wrong');
-            }
-         })
-         .then(function (response) {
-            var giphyResponse = document.querySelector('.wave-report');
+      .then(function (response) {
+         if (response.ok) {
+            return response.json();
+         } else {
+            throw new Error('Something went wrong');
+         }
+      })
+      .then(function (response) {
+         var giphyResponse = document.querySelector('.wave-report');
 
-            giphyResponse.innerHTML = "";
+         giphyResponse.innerHTML = "";
 
-            var giphyimage = document.createElement('img');
-            giphyimage.setAttribute('src', response.data[0].images.fixed_height.url);
+         var giphyimage = document.createElement('img');
+         giphyimage.setAttribute('src', response.data[0].images.fixed_height.url);
 
-            giphyResponse.appendChild(giphyimage);
+         giphyResponse.appendChild(giphyimage);
 
-         })
-         .catch((error) => {
-            console.log(error)
-         });
+      })
+      .catch((error) => {
+         console.log(error)
+      });
 
-    //Display surf conditions description and append to page as text
+   //Display surf conditions description and append to page as text
 
-      var surfConditionsEl = document.querySelector(".wave-report");
+   var surfConditionsEl = document.querySelector(".wave-report");
 
-      surfConditionsEl.innerHTML = surfConditions;
+   surfConditionsEl.innerHTML = surfConditions;
 
-   };
+};
 
 //TO-DO: Need to work out how to display wave height from Stormglass and where in the HTML
-   var fetchStormglassData = function (lat, lng) {
+var fetchStormglassData = function (lat, lon) {
+   console.log(lat);
+   console.log(lon);
 
-      // Convert time to UTC time, required to pass into the fetch parameter
-     var currentTime = Math.floor((new Date().getTime()) / 1000);
+   // Converts time to unix timestamp
+   var currentTime = moment().unix();
+   // adds 6 hours to current time 
+   var endTime = moment().add(6, 'h').unix();
 
 
-      var params = "waveHeight";
-      apiKey = "07a15aca-a88d-11eb-9cd1-0242ac130002-07a15b42-a88d-11eb-9cd1-0242ac130002"
 
-      fetch(`https://api.stormglass.io/v2/weather/point?lat=${lat}&lng=${lng}&params=${params}&start=${currentTime}&end=${currentTime}&source=noaa`, {
-         headers: {
-            'Authorization': apiKey
-         }
-      }).then((response) => {
-         if (response.ok) {
-            response.json().then((jsonData) => {
-               displayStormglassData(jsonData);
 
-             // Calling gif API based on Stormglass data
+   var params = "waveHeight";
+   apiKey = "07a15aca-a88d-11eb-9cd1-0242ac130002-07a15b42-a88d-11eb-9cd1-0242ac130002"
 
-               fetchGifs(jsonData);
-            });
-         }
-         else {
-            document.querySelector(".wave-report").style.display = "flex";
-         };
-      });
-   };
+   fetch(`https://api.stormglass.io/v2/weather/point?lat=${lat}&lng=${lon}&params=${params}&start=${currentTime}&end=${endTime}&source=noaa`, {
+      headers: {
+         'Authorization': apiKey
+      }
+   }).then((response) => {
+      if (response.ok) {
+         response.json().then((jsonData) => {
+            displayStormglassData(jsonData);
+            console.log(jsonData);
+
+            // Calling gif API based on Stormglass data
+
+            // fetchGifs(jsonData);
+         });
+      }
+      else {
+         document.querySelector(".wave-report").style.display = "flex";
+      };
+   });
+};

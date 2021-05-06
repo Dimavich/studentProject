@@ -176,6 +176,15 @@ input[type="text"]{
     box-shadow: 1px 1px 5px rgb(79, 79, 79);
 }
 
+.icon {
+    display: flex;
+    flex-direction: row;
+}
+
+.icon p {
+    margin-left: 3em;
+}
+
 @media (max-width:1460px) {
     .search-class {
         width: 40%;
@@ -206,7 +215,7 @@ input[type="text"]{
     }
 
     .day {
-        width: 3em;
+        width: 4em;
     }
 
 }
@@ -234,8 +243,8 @@ input[type="text"]{
     }
 
     .image{
-        height: 100px;
-        width: 100px;
+        height: 200px;
+        width: 200px;
     }
 
     .wave-report {

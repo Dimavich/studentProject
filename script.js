@@ -13,6 +13,7 @@
       { name: "San Diego", lat: 32.702983, lng: -117.291659 },
    ];*/
 
+ 
 //Function to get current weather and display in main-weather div:
 var date = moment().format('MMMM Do YYYY');
 var apiKey = '4e4c7ba3fe27e6a028d58369839454fe';
